@@ -17,7 +17,7 @@ var Animation = function () {
         initSpeed:  20, //max initial speed
         ftl:        100, //frames to live
         bounce:     true, //bounce in the walls
-        wallAbsorb: 0.5, //speed lost in every bounce
+        wallAbsorb: 0.75, //speed lost in every bounce
         gravity:    1, // y axis gravity
         shrinkRate: 0.96, //size decrease rate
         genRate:    30 //Generation rate
@@ -74,10 +74,10 @@ var Animation = function () {
             s.ftl -= 1;
             //Bounce
             if ( config.bounce ) {
-                if ( s.x > width  || s.x < 0 ) {
+                if ( s.x > width  || s.x < s.w ) {
                     s.xSpeed *= -config.wallAbsorb;
                 }
-                if ( s.y > height  || s.y < 0 ) {
+                if ( s.y > height  || s.y < s.w ) {
                     s.ySpeed *= -config.wallAbsorb;
                 }
             }
