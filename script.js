@@ -1,10 +1,13 @@
-var animation = function () {
+//Animation Class
+var Animation = function () {
 
+    //set the canvas and load the width and height
     var canvas  = document.getElementById('myCanvas');
     var width   = canvas.getAttribute('width');
     var height  = canvas.getAttribute('height');
     var c       = canvas.getContext('2d');
 
+    //generator settings
     var config = {
         x:          200,
         y:          200,
@@ -19,13 +22,23 @@ var animation = function () {
         shrinkRate: 0.96
     };
 
+    this.setConfig = function (new_config) {
+        foreach ( item in new_config ) {
+            if ( typeof config[item] != "undefined" ) {
+                config[item] = new_config[item];
+            }
+        }
+    };
+
+    //Generate particles from the current cursor position
     canvas.addEventListener('mousemove', function(e) {
         config.x = e.clientX - config.initW;
         config.y = e.clientY - config.initH;
     });
 
 
-    var sparkles = [];
+    //Array with the particles
+    var particles = [];
 
 
     var frame = function () {
@@ -33,8 +46,8 @@ var animation = function () {
         c.shadowBlur = 15;
         c.fillStyle = 'rgba(0,0,0,0.75)';
 
-        for (var i = 0; i < sparkles.length ; i++ ) {
-            var s = sparkles[i];
+        for (var i = 0; i < particles.length ; i++ ) {
+            var s = particles[i];
 
             var r = 255;
             var g = 0;
@@ -67,9 +80,9 @@ var animation = function () {
 
             //garbage collect
             if ( s.ftl == 0 ) {
-                sparkles.splice(i, 1);
+                particles.splice(i, 1);
             } else { 
-                sparkles[i] = s;
+                particles[i] = s;
             }
         }
     }
@@ -84,13 +97,14 @@ var animation = function () {
             ySpeed  : (Math.random()*config.initSpeed)-config.initSpeed/2,
             ftl     : config.ftl
         };
-        sparkles.push(sparkle);
+        particles.push(sparkle);
     }
 
     setInterval(frame, 30);
     setInterval(addSparkle, 1);
     addSparkle();
 };
+var animInstance;
 window.addEventListener("load", function(){
-    animation();
+    animInstance = new Animation();
 });
