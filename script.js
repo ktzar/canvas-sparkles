@@ -14,16 +14,17 @@ var Animation = function () {
         initW:      10,
         initH:      10,
         decay:      5,
-        initSpeed:  20,
+        initSpeed:  20, //max initial speed
         ftl:        100, //frames to live
-        rebound:    true,
-        wallAbsorb: 0.5,
-        gravity:    1,
-        shrinkRate: 0.96
+        bounce:     true, //bounce in the walls
+        wallAbsorb: 0.5, //speed lost in every bounce
+        gravity:    1, // y axis gravity
+        shrinkRate: 0.96, //size decrease rate
+        genRate:    30 //Generation rate
     };
 
     this.setConfig = function (new_config) {
-        foreach ( item in new_config ) {
+        for ( item in new_config ) {
             if ( typeof config[item] != "undefined" ) {
                 config[item] = new_config[item];
             }
@@ -40,7 +41,7 @@ var Animation = function () {
     //Array with the particles
     var particles = [];
 
-
+    //Function to execute every frame
     var frame = function () {
         c.clearRect(0,0,600,600);
         c.shadowBlur = 15;
@@ -62,14 +63,17 @@ var Animation = function () {
             c.closePath();
             c.fill();
 
+            //Movement
             s.x += s.xSpeed;
             s.y += s.ySpeed;
+            //Shrink
             s.h *= config.shrinkRate;
             s.w *= config.shrinkRate;
+            //Gravity
             s.ySpeed += config.gravity;
             s.ftl -= 1;
-
-            if ( config.rebound ) {
+            //Bounce
+            if ( config.bounce ) {
                 if ( s.x > width  || s.x < 0 ) {
                     s.xSpeed *= -config.wallAbsorb;
                 }
@@ -77,7 +81,6 @@ var Animation = function () {
                     s.ySpeed *= -config.wallAbsorb;
                 }
             }
-
             //garbage collect
             if ( s.ftl == 0 ) {
                 particles.splice(i, 1);
@@ -87,8 +90,9 @@ var Animation = function () {
         }
     }
 
-    function addSparkle() {
-        var sparkle = {
+    //Create a new Particle
+    function addParticle() {
+        var particle = {
             x       : config.x,
             y       : config.y,
             h       : config.initH,
@@ -97,12 +101,11 @@ var Animation = function () {
             ySpeed  : (Math.random()*config.initSpeed)-config.initSpeed/2,
             ftl     : config.ftl
         };
-        particles.push(sparkle);
+        particles.push(particle);
     }
 
     setInterval(frame, 30);
-    setInterval(addSparkle, 1);
-    addSparkle();
+    setInterval(addParticle, 1);
 };
 var animInstance;
 window.addEventListener("load", function(){
