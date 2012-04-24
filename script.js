@@ -16,6 +16,13 @@ var animation = function () {
             sparkles[i].x += sparkles[i].xSpeed;
             sparkles[i].y += sparkles[i].ySpeed;
             
+            if (
+                sparkles[i].x > 600  + sparkles[i].h || 
+                sparkles[i].x < 0  - sparkles[i].h ||
+                sparkles[i].y < 0 - sparkles[i].w ||
+                sparkles[i].y > 600 + sparkles[i].w) {
+                sparkles.splice(i,1);
+            }
         }
     }
 
