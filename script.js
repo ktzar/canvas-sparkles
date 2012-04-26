@@ -17,10 +17,10 @@ var Animation = function () {
         initSpeed:  20, //max initial speed
         ftl:        100, //frames to live
         bounce:     true, //bounce in the walls
-        wallAbsorb: 0.75, //speed lost in every bounce
+        wallAbsorb: 0.25, //speed lost in every bounce
         gravity:    1, // y axis gravity
         shrinkRate: 0.96, //size decrease rate
-        genRate:    30 //Generation rate
+        genRate:    1 //Generation rate
     };
 
     this.setConfig = function (new_config) {
@@ -44,7 +44,7 @@ var Animation = function () {
     //Function to execute every frame
     var frame = function () {
         c.clearRect(0,0,600,600);
-        c.shadowBlur = 15;
+        c.shadowBlur = 45;
         c.fillStyle = 'rgba(0,0,0,0.75)';
 
         for (var i = 0; i < particles.length ; i++ ) {
@@ -56,7 +56,7 @@ var Animation = function () {
             var a = (-s.decay+1) + s.decay*(s.ftl / 100);
 
             c.fillStyle     = 'rgba('+r+','+g+','+b+','+a+')';
-            c.shadowColor   = 'rgba('+r+','+g+','+b+','+a+')';
+            c.shadowColor   = 'red';
 
             c.beginPath();
             c.arc(s.x, s.y, s.h, 0, Math.PI*2, true); 
@@ -77,7 +77,7 @@ var Animation = function () {
                 if ( s.x > width  || s.x < s.w ) {
                     s.xSpeed *= -config.wallAbsorb;
                 }
-                if ( s.y > height  || s.y < s.w ) {
+                if ( s.y + s.h > height  || s.y < s.w ) {
                     s.ySpeed *= -config.wallAbsorb;
                 }
             }
@@ -105,7 +105,7 @@ var Animation = function () {
     }
 
     setInterval(frame, 30);
-    setInterval(addParticle, 1);
+    setInterval(addParticle, config.genRate);
 };
 var animInstance;
 window.addEventListener("load", function(){
