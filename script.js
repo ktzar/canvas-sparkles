@@ -15,12 +15,12 @@ var Animation = function () {
         initH:      10,
         decay:      5,
         initSpeed:  20, //max initial speed
-        ftl:        100, //frames to live
         bounce:     true, //bounce in the walls
         wallAbsorb: 0.25, //speed lost in every bounce
         gravity:    1, // y axis gravity
         shrinkRate: 0.96, //size decrease rate
-        genRate:    1 //Generation rate
+        genRate:    10, //Generation rate
+        genPerStep: 10
     };
 
     this.setConfig = function (new_config) {
@@ -44,7 +44,7 @@ var Animation = function () {
     //Function to execute every frame
     var frame = function () {
         c.clearRect(0,0,600,600);
-        c.shadowBlur = 45;
+        c.shadowBlur = 0;
         c.fillStyle = 'rgba(0,0,0,0.75)';
 
         for (var i = 0; i < particles.length ; i++ ) {
@@ -53,7 +53,7 @@ var Animation = function () {
             var r = 255;
             var g = 0;
             var b = 0;
-            var a = (-s.decay+1) + s.decay*(s.ftl / 100);
+            var a = (-s.decay+1) + s.decay*(s.age / 100);
 
             c.fillStyle     = 'rgba('+r+','+g+','+b+','+a+')';
             c.shadowColor   = 'red';
@@ -71,18 +71,18 @@ var Animation = function () {
             s.w *= config.shrinkRate;
             //Gravity
             s.ySpeed += config.gravity;
-            s.ftl -= 1;
+            s.age ++;
             //Bounce
             if ( config.bounce ) {
-                if ( s.x > width  || s.x < s.w ) {
+                if ( s.x + s.w > width  || s.x - s.w < 0 ) {
                     s.xSpeed *= -config.wallAbsorb;
                 }
-                if ( s.y + s.h > height  || s.y < s.w ) {
+                if ( s.y + s.h > height  || s.y - s.h < 0 ) {
                     s.ySpeed *= -config.wallAbsorb;
                 }
             }
             //garbage collect
-            if ( s.ftl == 0 ) {
+            if ( s.h < 1 || s.w < 1 ) {
                 particles.splice(i, 1);
             } else { 
                 particles[i] = s;
@@ -92,16 +92,18 @@ var Animation = function () {
 
     //Create a new Particle
     function addParticle() {
-        var particle = {
-            x       : config.x,
-            y       : config.y,
-            h       : config.initH,
-            w       : config.initW,
-            xSpeed  : (Math.random()*config.initSpeed)-config.initSpeed/2,
-            ySpeed  : (Math.random()*config.initSpeed)-config.initSpeed/2,
-            ftl     : config.ftl
-        };
-        particles.push(particle);
+        for ( i = 0 ; i < config.genPerStep ; i ++ ) {
+            var particle = {
+                x       : config.x,
+                y       : config.y,
+                h       : config.initH,
+                w       : config.initW,
+                xSpeed  : (Math.random()*config.initSpeed)-config.initSpeed/2,
+                ySpeed  : (Math.random()*config.initSpeed)-config.initSpeed/2,
+                age     : 0
+            };
+            particles.push(particle);
+        }
     }
 
     setInterval(frame, 30);
