@@ -28,15 +28,16 @@ var Animation = function (new_config) {
         initW:      20,
         initH:      20,
         decay:      5,
-        initSpeedY: [-50, 0], //max initial speed range in Y axis
-        initSpeedX: [-10, 10], //max initial speed range in X axis
-        bounce:     true, //bounce in the walls
-        wallAbsorb: 0.75, //speed lost in every bounce
-        gravity:    1, // y axis gravity
-        shrinkRate: 0.96, //size decrease rate
-        genRate:    10, //Generation rate
-        genPerStep: 10,
-        steps:      -1
+        initSpeedY: [-20, 20],  //Max initial speed range in Y axis
+        initSpeedX: [-20, 20],  //Max initial speed range in X axis
+        bounceX:    true,       //Bounce in the side walls
+        bounceY:    true,       //Bounce in the top/bottom walls
+        wallAbsorb: 0.75,       //Speed lost in every bounce
+        gravity:    1,          //Y axis gravity
+        shrinkRate: 0.96,       //Size decrease rate
+        genRate:    10,         //Generation rate
+        genPerStep: 1,          //Particles generated per step
+        steps:      -1          //-1 for ilimited
     };
 
     this.setConfig = function (new_config) {
@@ -94,10 +95,12 @@ var Animation = function (new_config) {
             s.ySpeed += config.gravity;
             s.age ++;
             //Bounce
-            if ( config.bounce ) {
+            if ( config.bounceX ) {
                 if ( s.x + s.w > width  || s.x - s.w < 0 ) {
                     s.xSpeed *= -config.wallAbsorb;
                 }
+            }
+            if ( config.bounceY ) {
                 if ( s.y + s.h > height  || s.y - s.h < 0 ) {
                     s.ySpeed *= -config.wallAbsorb;
                 }
