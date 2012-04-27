@@ -1,26 +1,42 @@
+//Return a random number between a and b
+function randomBetween (a, b) {
+    if ( a > b ) {
+        var range = a - b;
+        var min = b;
+    } else {
+        var range = b - a;
+        var min = a;
+    }
+    return (Math.random()*range)+min;
+
+}
+
 //Animation Class
-var Animation = function () {
+var Animation = function (new_config) {
 
     //set the canvas and load the width and height
     var canvas  = document.getElementById('myCanvas');
     var width   = canvas.getAttribute('width');
     var height  = canvas.getAttribute('height');
     var c       = canvas.getContext('2d');
+    var _this   = this;
 
     //generator settings
     var config = {
         x:          200,
         y:          200,
-        initW:      10,
-        initH:      10,
+        initW:      20,
+        initH:      20,
         decay:      5,
-        initSpeed:  20, //max initial speed
+        initSpeedY: [-50, 0], //max initial speed range in Y axis
+        initSpeedX: [-10, 10], //max initial speed range in X axis
         bounce:     true, //bounce in the walls
-        wallAbsorb: 0.25, //speed lost in every bounce
+        wallAbsorb: 0.75, //speed lost in every bounce
         gravity:    1, // y axis gravity
         shrinkRate: 0.96, //size decrease rate
         genRate:    10, //Generation rate
-        genPerStep: 10
+        genPerStep: 10,
+        steps:      -1
     };
 
     this.setConfig = function (new_config) {
@@ -30,6 +46,11 @@ var Animation = function () {
             }
         }
     };
+
+
+    if ( typeof new_config != "undefined" ) {
+        this.setConfig(new_config);
+    }
 
     //Generate particles from the current cursor position
     canvas.addEventListener('mousemove', function(e) {
@@ -98,18 +119,30 @@ var Animation = function () {
                 y       : config.y,
                 h       : config.initH,
                 w       : config.initW,
-                xSpeed  : (Math.random()*config.initSpeed)-config.initSpeed/2,
-                ySpeed  : (Math.random()*config.initSpeed)-config.initSpeed/2,
+                xSpeed  : randomBetween(config.initSpeedX[0],config.initSpeedX[1]),
+                ySpeed  : randomBetween(config.initSpeedY[0],config.initSpeedY[1]),
                 age     : 0
             };
             particles.push(particle);
         }
+        config.steps --;
+        if ( config.steps == 0 ) {
+            clearInterval(_this.interval);
+        }
     }
 
     setInterval(frame, 30);
-    setInterval(addParticle, config.genRate);
+    _this.interval = setInterval(addParticle, config.genRate);
 };
 var animInstance;
 window.addEventListener("load", function(){
     animInstance = new Animation();
 });
+/**
+ * randomBetween 
+ * 
+ * @param a $a 
+ * @param b $b 
+ * @access public
+ * @return void
+ */
