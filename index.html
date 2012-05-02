@@ -24,13 +24,28 @@
             initialiseControls();
         });
     </script>
+    <style type="text/css" media="screen">
+        #myCanvas{
+            float:left;
+        }
+    </style>
 </head>
 <body>
     <canvas id="myCanvas" width="600" height="600"></canvas>
     <div class="control-panel">
         <div class="value">
-            <label>Initial width</label>
-            <input type="range" step="1" value="10" min="5" max="55" id="initW"/>
+            <label>Initial size</label>
+            <input type="range" step="1" value="10" min="5" max="55" id="initSize"/>
+            <output></output><br/>
+        </div>
+        <div class="value">
+            <label>Initial Speed Y</label>
+            <input type="range" step="1" value="0" min="-40" max="40" id="initSpeedY"/>
+            <output></output><br/>
+        </div>
+        <div class="value">
+            <label>Initial Speed X</label>
+            <input type="range" step="1" value="0" min="-40" max="40" id="initSpeedX"/>
             <output></output><br/>
         </div>
     </div>

@@ -28,11 +28,10 @@ var Animation = function (new_config) {
     var _this   = this;
 
     //generator settings
-    var config = {
+    this.config = {
         x:          200,
         y:          200,
-        initW:      20,
-        initH:      20,
+        initSize:   20,
         decay:      5,
         initSpeedY: [-20, 20],  //Max initial speed range in Y axis
         initSpeedX: [-20, 20],  //Max initial speed range in X axis
@@ -49,11 +48,11 @@ var Animation = function (new_config) {
     this.setConfig = function (new_config) {
         console.log(new_config);
         for ( item in new_config ) {
-            if ( typeof config[item] != "undefined" ) {
-                config[item] = new_config[item];
+            if ( typeof _this.config[item] != "undefined" ) {
+                _this.config[item] = new_config[item];
             }
         }
-        console.log(config);
+        console.log(_this.config);
     };
 
 
@@ -63,9 +62,8 @@ var Animation = function (new_config) {
 
     //Generate particles from the current cursor position
     canvas.addEventListener('mousemove', function(e) {
-        console.log(' create ', config.initW, config.initH);
-        config.x = e.clientX - config.initW;
-        config.y = e.clientY - config.initH;
+        _this.config.x = e.offsetX - _this.config.initSize;
+        _this.config.y = e.offsetY - _this.config.initSize;
     });
 
 
@@ -90,7 +88,7 @@ var Animation = function (new_config) {
             c.shadowColor   = 'red';
 
             c.beginPath();
-            c.arc(s.x, s.y, s.h, 0, Math.PI*2, true); 
+            c.arc(s.x, s.y, s.s, 0, Math.PI*2, true); 
             c.closePath();
             c.fill();
 
@@ -98,20 +96,20 @@ var Animation = function (new_config) {
             s.x += s.xSpeed;
             s.y += s.ySpeed;
             //Shrink
-            s.h *= config.shrinkRate;
-            s.w *= config.shrinkRate;
+            s.h *= _this.config.shrinkRate;
+            s.w *= _this.config.shrinkRate;
             //Gravity
-            s.ySpeed += config.gravity;
+            s.ySpeed += _this.config.gravity;
             s.age ++;
             //Bounce
-            if ( config.bounceX ) {
+            if ( _this.config.bounceX ) {
                 if ( s.x + s.w > width  || s.x - s.w < 0 ) {
-                    s.xSpeed *= -config.wallAbsorb;
+                    s.xSpeed *= -_this.config.wallAbsorb;
                 }
             }
-            if ( config.bounceY ) {
+            if ( _this.config.bounceY ) {
                 if ( s.y + s.h > height  || s.y - s.h < 0 ) {
-                    s.ySpeed *= -config.wallAbsorb;
+                    s.ySpeed *= -_this.config.wallAbsorb;
                 }
             }
             //garbage collect
@@ -125,24 +123,23 @@ var Animation = function (new_config) {
 
     //Create a new Particle
     function addParticle() {
-        for ( i = 0 ; i < config.genPerStep ; i ++ ) {
+        for ( i = 0 ; i < _this.config.genPerStep ; i ++ ) {
             var particle = {
-                x       : config.x,
-                y       : config.y,
-                h       : config.initH,
-                w       : config.initW,
-                xSpeed  : randomBetween(config.initSpeedX[0],config.initSpeedX[1]),
-                ySpeed  : randomBetween(config.initSpeedY[0],config.initSpeedY[1]),
+                x       : _this.config.x,
+                y       : _this.config.y,
+                s       : _this.config.initSize,
+                xSpeed  : randomBetween(_this.config.initSpeedX[0],_this.config.initSpeedX[1]),
+                ySpeed  : randomBetween(_this.config.initSpeedY[0],_this.config.initSpeedY[1]),
                 age     : 0
             };
             particles.push(particle);
         }
-        config.steps --;
-        if ( config.steps == 0 ) {
+        _this.config.steps --;
+        if ( _this.config.steps == 0 ) {
             clearInterval(_this.interval);
         }
     }
 
     setInterval(frame, 30);
-    _this.interval = setInterval(addParticle, config.genRate);
+    _this.interval = setInterval(addParticle, _this.config.genRate);
 };
