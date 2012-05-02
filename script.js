@@ -1,4 +1,10 @@
-//Return a random number between a and b
+/**
+ * Return a random number between a and b
+ * 
+ * @param a int
+ * @param b int
+ * @return int
+ */
 function randomBetween (a, b) {
     if ( a > b ) {
         var range = a - b;
@@ -41,11 +47,13 @@ var Animation = function (new_config) {
     };
 
     this.setConfig = function (new_config) {
+        console.log(new_config);
         for ( item in new_config ) {
             if ( typeof config[item] != "undefined" ) {
                 config[item] = new_config[item];
             }
         }
+        console.log(config);
     };
 
 
@@ -55,6 +63,7 @@ var Animation = function (new_config) {
 
     //Generate particles from the current cursor position
     canvas.addEventListener('mousemove', function(e) {
+        console.log(' create ', config.initW, config.initH);
         config.x = e.clientX - config.initW;
         config.y = e.clientY - config.initH;
     });
@@ -137,15 +146,3 @@ var Animation = function (new_config) {
     setInterval(frame, 30);
     _this.interval = setInterval(addParticle, config.genRate);
 };
-var animInstance;
-window.addEventListener("load", function(){
-    animInstance = new Animation();
-});
-/**
- * randomBetween 
- * 
- * @param a $a 
- * @param b $b 
- * @access public
- * @return void
- */
