@@ -50,7 +50,7 @@ var ParticleSystem = function (new_config) {
         initSpeedX: 0,  //Max initial speed range in X axis
         bounceX:    true,       //Bounce in the side walls
         bounceY:    true,       //Bounce in the top/bottom walls
-        wallAbsorb: 0.75,       //Speed lost in every bounce
+        wallAbsorb: 1,       //Speed lost in every bounce
         gravity:    1,          //Y axis gravity
         shrinkRate: 0.96,       //Size decrease rate
         genRate:    10,         //Generation rate
@@ -90,7 +90,7 @@ var ParticleSystem = function (new_config) {
         c.shadowBlur = 0;
         c.fillStyle = 'rgba(0,0,0,0.75)';
 
-        console.log(particles.length);
+console.log(particles.length);
         for (var i = 0; i < particles.length ; i++ ) {
             var s = particles[i];
 
@@ -111,26 +111,23 @@ var ParticleSystem = function (new_config) {
             s.x += s.xSpeed;
             s.y += s.ySpeed;
             //Shrink
-            s.h *= _this.config.shrinkRate;
-            s.w *= _this.config.shrinkRate;
+            s.s *= _this.config.shrinkRate;
             //Gravity
             s.ySpeed += _this.config.gravity;
             s.age ++;
             //Bounce
             if ( _this.config.bounceX ) {
-                if ( s.x + s.w > width  || s.x - s.w < 0 ) {
+                if ( s.x > width  || s.x - s.s < 0 ) {
                     s.xSpeed *= -_this.config.wallAbsorb;
                 }
             }
             if ( _this.config.bounceY ) {
-                if ( s.y + s.h > height  || s.y - s.h < 0 ) {
+                if ( s.y > height  || s.y - s.s < 0 ) {
                     s.ySpeed *= -_this.config.wallAbsorb;
                 }
             }
             //garbage collect
-            if (    s.x < 0 || s.x > width || 
-                    s.y < 0 || s.y > height 
-               ) {
+            if ( s.s < 1 ) {
                 particles.splice(i, 1);
             }
         }
@@ -150,13 +147,10 @@ var ParticleSystem = function (new_config) {
             particles.push(particle);
         }
         _this.config.steps --;
-        if ( _this.config.steps == 0 ) {
-            clearInterval(_this.interval);
-        }
+        _this.timeout = setTimeout(addParticle, _this.config.genRate);
     }
 
 
     window.requestAnimFrame(frame);
-    _this.interval = setInterval(addParticle, _this.config.genRate);
+    _this.timeout = setTimeout(addParticle, _this.config.genRate);
 };
-var debug = false;
