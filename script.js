@@ -90,6 +90,7 @@ var ParticleSystem = function (new_config) {
         c.shadowBlur = 0;
         c.fillStyle = 'rgba(0,0,0,0.75)';
 
+        console.log(particles.length);
         for (var i = 0; i < particles.length ; i++ ) {
             var s = particles[i];
 
@@ -127,10 +128,10 @@ var ParticleSystem = function (new_config) {
                 }
             }
             //garbage collect
-            if ( s.h < 1 || s.w < 1 ) {
+            if (    s.x < 0 || s.x > width || 
+                    s.y < 0 || s.y > height 
+               ) {
                 particles.splice(i, 1);
-            } else { 
-                particles[i] = s;
             }
         }
     }
