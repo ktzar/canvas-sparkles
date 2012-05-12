@@ -10,17 +10,21 @@
         function initialiseControls() {
             $('.control-panel input').change(function(){
                 var key = $(this).attr('id');
-                var value = $(this).val();
+                if ( $(this).attr('type') == 'checkbox') {
+                    var value = ($(this).attr('checked'))?true:false;
+                } else {
+                    var value = parseInt($(this).val());
+                }
                 $(this).parent().find('output').val(value);
                 var new_config = {};
-                new_config[key] = parseInt(value);
+                new_config[key] = value;
                 animInstance.setConfig(new_config);
             }).each(function(){
                 $(this).parent().find('output').val($(this).val());
             });
         }
         $(function(){
-            animInstance = new Animation();
+            animInstance = new ParticleSystem();
             initialiseControls();
         });
     </script>
@@ -46,6 +50,16 @@
         <div class="value">
             <label>Initial Speed X</label>
             <input type="range" step="1" value="0" min="-40" max="40" id="initSpeedX"/>
+            <output></output><br/>
+        </div>
+        <div class="value">
+            <label>Initial Speed Randomness</label>
+            <input type="range" step="1" value="0" min="0" max="10" id="initSpeedRand"/>
+            <output></output><br/>
+        </div>
+        <div class="value">
+            <label>Bouncing X</label>
+            <input type="checkbox" id="bounceX"/>
             <output></output><br/>
         </div>
     </div>

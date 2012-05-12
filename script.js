@@ -17,8 +17,20 @@ function randomBetween (a, b) {
 
 }
 
+// shim layer with setTimeout fallback
+window.requestAnimFrame = (function(){
+    return  window.requestAnimationFrame    || 
+    window.webkitRequestAnimationFrame      || 
+    window.mozRequestAnimationFrame         || 
+    window.oRequestAnimationFrame           || 
+    window.msRequestAnimationFrame          || 
+    function( callback ){
+        window.setTimeout(callback, 1000 / 60);
+    };
+})();
+
 //Animation Class
-var Animation = function (new_config) {
+var ParticleSystem = function (new_config) {
 
     //set the canvas and load the width and height
     var canvas  = document.getElementById('myCanvas');
@@ -33,8 +45,9 @@ var Animation = function (new_config) {
         y:          200,
         initSize:   20,
         decay:      5,
-        initSpeedY: [-20, 20],  //Max initial speed range in Y axis
-        initSpeedX: [-20, 20],  //Max initial speed range in X axis
+        initSpeedRand: 10,
+        initSpeedY: 0,  //Max initial speed range in Y axis
+        initSpeedX: 0,  //Max initial speed range in X axis
         bounceX:    true,       //Bounce in the side walls
         bounceY:    true,       //Bounce in the top/bottom walls
         wallAbsorb: 0.75,       //Speed lost in every bounce
@@ -72,6 +85,7 @@ var Animation = function (new_config) {
 
     //Function to execute every frame
     var frame = function () {
+        window.requestAnimFrame(frame);
         c.clearRect(0,0,600,600);
         c.shadowBlur = 0;
         c.fillStyle = 'rgba(0,0,0,0.75)';
@@ -128,8 +142,8 @@ var Animation = function (new_config) {
                 x       : _this.config.x,
                 y       : _this.config.y,
                 s       : _this.config.initSize,
-                xSpeed  : randomBetween(_this.config.initSpeedX[0],_this.config.initSpeedX[1]),
-                ySpeed  : randomBetween(_this.config.initSpeedY[0],_this.config.initSpeedY[1]),
+                xSpeed  : randomBetween(_this.config.initSpeedX-_this.config.initSpeedRand,_this.config.initSpeedX+_this.config.initSpeedRand),
+                ySpeed  : randomBetween(_this.config.initSpeedY-_this.config.initSpeedRand,_this.config.initSpeedY+_this.config.initSpeedRand),
                 age     : 0
             };
             particles.push(particle);
@@ -140,6 +154,8 @@ var Animation = function (new_config) {
         }
     }
 
-    setInterval(frame, 30);
+
+    window.requestAnimFrame(frame);
     _this.interval = setInterval(addParticle, _this.config.genRate);
 };
+var debug = false;
