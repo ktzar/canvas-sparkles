@@ -90,7 +90,6 @@ var ParticleSystem = function (new_config) {
         c.shadowBlur = 0;
         c.fillStyle = 'rgba(0,0,0,0.75)';
 
-console.log(particles.length);
         for (var i = 0; i < particles.length ; i++ ) {
             var s = particles[i];
 
